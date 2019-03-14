@@ -2,20 +2,20 @@
 function setup() {
     let width = 2000;
     let height = 2000;
-    let pointx = -1000;
-    let pointy = -1000;
+    let pointx = 0;
+    let pointy = 0;
     let factor = 1;
 
-    function rFormula(x,y) {
-        return Math.sin(Math.log(x*y));
+    function rFunc(x,y) {
+        return Math.asin((Math.log(x^y) % 2) - 1);
     }
-    function gFormula(x,y) {
-        return Math.cos(Math.sqrt(x/y));
+    function gFunc(x,y) {
+        return Math.acos((Math.log(x^y) % 2) - 1);
     }
-    function bFormula(x,y) {
-        return Math.tan(Math.log(x^y));
+    function bFunc(x,y) {
+        return Math.atan(Math.log(x^y));
     }
-    function aFormula(x,y) {
+    function aFunc(x,y) {
         return 1
     }
 
@@ -26,21 +26,33 @@ function setup() {
     let ctx = c.getContext("2d");
 
     let pixelList = [];
-    let ranStandx = pointx+Math.random()*width*factor
-    let ranStandy = pointy+Math.random()*height*factor
-    let ranStandr = rFormula(ranStandx, ranStandy)
-    let ranStandg = gFormula(ranStandx, ranStandy)
-    let ranStandb = bFormula(ranStandx, ranStandy)
-    let ranStanda = aFormula(ranStandx, ranStandy)
+    let rMin,rMax,gMin,gMax,bMin,bMax,aMin,aMax;
+    rMin=rMax=gMin=gMax=bMin=bMax=aMin=aMax=0;
 
     for(let x = pointx; x < pointx+width*factor; x+=factor) {
         for(let y = pointy; y < pointy+height*factor; y+=factor) {
-            let r = (rFormula(x,y)*255) / ranStandr;
-            let b = (gFormula(x,y)*255) / ranStandb;
-            let g = (bFormula(x,y)*255) / ranStandg;
-            let a = (aFormula(x,y)*255) / ranStanda;
-            ctx.fillStyle = "rgba("+r+","+g+","+b+","+a+")";
-            ctx.fillRect((x-pointx)/factor, (y-pointy)/factor, 1, 1 );
+            let r = rFunc(x,y);
+            let g = gFunc(x,y);
+            let b = bFunc(x,y);
+            let a = aFunc(x,y);
+            pixelList.push([x,y,r,g,b,a]);
+            if(rMin > r) {rMin = r;}
+            if(gMin > g) {gMin = g;}
+            if(bMin > b) {bMin = b;}
+            if(aMin > a) {aMin = a;}
+            if(rMax < r) {rMax = r;}
+            if(gMax < g) {gMax = g;}
+            if(bMax < b) {bMax = b;}
+            if(aMax < a) {aMax = a;}
         }
+    }
+
+    for(let pixel of pixelList) {
+        ctx.fillStyle = "rgba("+
+        ((pixel[2]-rMin)*255)/(rMax-rMin)+","+
+        ((pixel[3]-gMin)*255)/(gMax-gMin)+","+
+        ((pixel[4]-bMin)*255)/(bMax-bMin)+","+
+        ((pixel[5]-aMin)*255)/(aMax-aMin)+")";
+        ctx.fillRect((pixel[0]-pointx)/factor, (pixel[1]-pointy)/factor, 1, 1 );
     }
 }
