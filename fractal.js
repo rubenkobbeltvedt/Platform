@@ -7,20 +7,20 @@ function setup() {
     let factor = 1;
 
     function rFunc(x,y) {
-        return Math.asin((Math.log(x^y) % 2) - 1);
+        return Math.sin(Math.log(x^y));
     }
     function gFunc(x,y) {
-        return Math.acos((Math.log(x^y) % 2) - 1);
+        return Math.cos(Math.log(x^y));
     }
     function bFunc(x,y) {
-        return Math.atan(Math.log(x^y));
+        return Math.tan(Math.log(x^y));
     }
     function aFunc(x,y) {
         return 1
     }
 
     let c = document.createElement("canvas");
-    c.width = width;
+    c.width = width
     c.height = height;
     document.body.appendChild(c);
     let ctx = c.getContext("2d");
